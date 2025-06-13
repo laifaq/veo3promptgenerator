@@ -1,95 +1,156 @@
-document.addEventListener('DOMContentLoaded', () => {
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
 
-    const cameraMovements = [
-        { en: "Static Shot", id: "Tangkapan Statis" },
-        { en: "Pan Left", id: "Geser Kiri" },
-        { en: "Pan Right", id: "Geser Kanan" },
-        { en: "Pan Up", id: "Geser Atas" },
-        { en: "Pan Down", id: "Geser Bawah" },
-        { en: "Tilt Up", id: "Miring ke Atas" },
-        { en: "Tilt Down", id: "Miring ke Bawah" },
-        { en: "Roll Left", id: "Putar Kiri" },
-        { en: "Roll Right", id: "Putar Kanan" },
-        { en: "Zoom In", id: "Perbesar" },
-        { en: "Zoom Out", id: "Perkecil" },
-        { en: "Dolly In", id: "Dolly Masuk" },
-        { en: "Dolly Out", id: "Dolly Keluar" },
-        { en: "Truck Left", id: "Geser Kamera ke Kiri" },
-        { en: "Truck Right", id: "Geser Kamera ke Kanan" },
-        { en: "Crane Up", id: "Angkat Kamera ke Atas" },
-        { en: "Crane Down", id: "Turunkan Kamera" },
-        { en: "Tracking Shot", id: "Tangkapan Mengikuti" },
-        { en: "3D Rotation", id: "Rotasi 3D" },
-        { en: "Orbit", id: "Mengorbit" },
-        { en: "Shake", id: "Guncang" },
-        { en: "First Person / POV", id: "Sudut Pandang Orang Pertama" }
-    ];
+:root {
+    --primary-color: #0d1b2a;
+    --secondary-color: #1b263b;
+    --border-color: #415a77;
+    --text-color: #e0e1dd;
+    --accent-color: #778da9;
+    --button-bg: #415a77;
+    --button-hover-bg: #778da9;
+}
 
-    const cameraSelect = document.getElementById('kamera');
-    cameraMovements.forEach(move => {
-        const option = document.createElement('option');
-        option.value = move.en;
-        option.textContent = `${move.en} (${move.id})`;
-        cameraSelect.appendChild(option);
-    });
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: var(--primary-color);
+    color: var(--text-color);
+    line-height: 1.6;
+    margin: 0;
+    padding: 20px;
+}
 
-    const getElementValue = id => document.getElementById(id).value;
-    const setElementValue = (id, value) => { document.getElementById(id).value = value; };
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+    background-color: var(--secondary-color);
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+}
 
-    document.getElementById('reset-btn').addEventListener('click', () => {
-        const inputIds = [
-            'judul', 'karakter', 'suara', 'aksi', 'ekspresi', 'latar', 
-            'visual-tambahan', 'suasana', 'ambience', 'dialog', 'negatif',
-            'output-id', 'output-en'
-        ];
-        inputIds.forEach(id => setElementValue(id, ''));
-        document.getElementById('kamera').selectedIndex = 0;
-    });
+header {
+    text-align: center;
+    margin-bottom: 2rem;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 1rem;
+}
 
-    document.getElementById('generate-btn').addEventListener('click', () => {
-        const inputs = {
-            judul: getElementValue('judul'),
-            karakter: getElementValue('karakter'),
-            suara: getElementValue('suara'),
-            aksi: getElementValue('aksi'),
-            ekspresi: getElementValue('ekspresi'),
-            latar: getElementValue('latar'),
-            kamera: getElementValue('kamera'),
-            visualTambahan: getElementValue('visual-tambahan'),
-            suasana: getElementValue('suasana'),
-            ambience: getElementValue('ambience'),
-            dialog: getElementValue('dialog'),
-            negatif: getElementValue('negatif'),
-        };
+header h1 {
+    color: var(--text-color);
+    margin-bottom: 0.5rem;
+}
 
-        // Generate Indonesian Prompt
-        let promptID = `**Judul Scene:** ${inputs.judul}\n\n`;
-        promptID += `**Karakter:**\n${inputs.karakter}\n\n`;
-        promptID += `**Detail Suara:**\n${inputs.suara}\n\n`;
-        promptID += `**Aksi:**\n${inputs.aksi}\n\n`;
-        promptID += `**Ekspresi:**\n${inputs.ekspresi}\n\n`;
-        promptID += `**Latar & Waktu:**\n${inputs.latar}\n\n`;
-        promptID += `**Detail Visual:**\nGerakan Kamera: ${inputs.kamera}. ${inputs.visualTambahan}\n\n`;
-        promptID += `**Suasana:**\n${inputs.suasana}\n\n`;
-        promptID += `**Suara Lingkungan:**\n${inputs.ambience}\n\n`;
-        promptID += `**Dialog:**\n${inputs.dialog}\n\n`;
-        promptID += `**Negative Prompt:**\n${inputs.negatif}`;
+header .subtitle {
+    margin: 0;
+    font-weight: 500;
+    color: var(--accent-color);
+}
 
-        setElementValue('output-id', promptID);
+header .social {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+    color: var(--accent-color);
+}
 
-        // Generate English Prompt
-        let promptEN = `**Scene Title:** ${inputs.judul}\n\n`;
-        promptEN += `**Core Character:**\n${inputs.karakter}\n\n`;
-        promptEN += `**Character Voice Details:**\n${inputs.suara}\n\n`;
-        promptEN += `**Character Action:**\n${inputs.aksi}\n\n`;
-        promptEN += `**Character Expression:**\n${inputs.ekspresi}\n\n`;
-        promptEN += `**Setting & Time:**\n${inputs.latar}\n\n`;
-        promptEN += `**Additional Visual Details:**\nCamera Movement: ${inputs.kamera}. ${inputs.visualTambahan}\n\n`;
-        promptEN += `**Overall Atmosphere:**\n${inputs.suasana}\n\n`;
-        promptEN += `**Environmental Sound/Ambiance:**\n${inputs.ambience}\n\n`;
-        promptEN += `**Character Dialog (in Indonesian):**\n${inputs.dialog}\n\n`;
-        promptEN += `**Negative Prompt:**\n${inputs.negatif}`;
-        
-        setElementValue('output-en', promptEN);
-    });
-}); 
+.input-group {
+    margin-bottom: 1.5rem;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: var(--text-color);
+}
+
+input[type="text"],
+textarea,
+select {
+    width: 100%;
+    padding: 0.8rem;
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    background-color: var(--primary-color);
+    color: var(--text-color);
+    font-size: 1rem;
+    box-sizing: border-box;
+}
+
+textarea {
+    resize: vertical;
+}
+
+.visual-details {
+    display: flex;
+    gap: 1rem;
+}
+
+.visual-details select {
+    flex-basis: 40%;
+}
+
+.visual-details textarea {
+    flex-basis: 60%;
+}
+
+.button-group {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+#generate-btn, #reset-btn {
+    width: 100%;
+    padding: 1rem;
+    border: none;
+    border-radius: 5px;
+    font-size: 1.2rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    color: var(--text-color);
+}
+
+#generate-btn {
+    background-color: var(--button-bg);
+}
+
+#generate-btn:hover {
+    background-color: var(--button-hover-bg);
+}
+
+#reset-btn {
+    background-color: #6c757d;
+}
+
+#reset-btn:hover {
+    background-color: #5a6268;
+}
+
+.output-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.output-column h2 {
+    font-size: 1.2rem;
+    color: var(--accent-color);
+    margin-bottom: 1rem;
+}
+
+.output-column textarea {
+    height: 300px;
+    background-color: var(--primary-color);
+}
+
+textarea#output-en {
+    background-color: #09131f;
+    cursor: not-allowed;
+} 
