@@ -36,6 +36,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const getElementValue = id => document.getElementById(id).value;
     const setElementValue = (id, value) => { document.getElementById(id).value = value; };
 
+    document.getElementById('reset-btn').addEventListener('click', () => {
+        const inputIds = [
+            'judul', 'karakter', 'suara', 'aksi', 'ekspresi', 'latar', 
+            'visual-tambahan', 'suasana', 'ambience', 'dialog', 'negatif',
+            'output-id', 'output-en'
+        ];
+        inputIds.forEach(id => setElementValue(id, ''));
+        document.getElementById('kamera').selectedIndex = 0;
+    });
+
     document.getElementById('generate-btn').addEventListener('click', () => {
         const inputs = {
             judul: getElementValue('judul'),
