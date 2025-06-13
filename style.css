@@ -96,23 +96,38 @@ textarea {
     flex-basis: 60%;
 }
 
-#generate-btn {
-    display: block;
+.button-group {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+#generate-btn, #reset-btn {
     width: 100%;
     padding: 1rem;
-    background-color: var(--button-bg);
-    color: var(--text-color);
     border: none;
     border-radius: 5px;
     font-size: 1.2rem;
     font-weight: 700;
     cursor: pointer;
     transition: background-color 0.3s ease;
-    margin-top: 2rem;
+    color: var(--text-color);
+}
+
+#generate-btn {
+    background-color: var(--button-bg);
 }
 
 #generate-btn:hover {
     background-color: var(--button-hover-bg);
+}
+
+#reset-btn {
+    background-color: #6c757d;
+}
+
+#reset-btn:hover {
+    background-color: #5a6268;
 }
 
 .output-container {
