@@ -50,21 +50,39 @@ document.addEventListener('DOMContentLoaded', () => {
     // Progress tracking
     const updateProgress = () => {
         const requiredFields = ['judul', 'karakter'];
-        const optionalFields = ['suara', 'aksi', 'ekspresi', 'latar', 'visual-tambahan', 'suasana', 'ambience', 'dialog', 'negatif'];
+        const optionalFields = ['suara', 'aksi', 'ekspresi', 'latar', 'kamera', 'visual-tambahan', 'suasana', 'ambience', 'dialog', 'negatif'];
         const allFields = [...requiredFields, ...optionalFields];
         
         let filledFields = 0;
-        allFields.forEach(fieldId => {
+        let requiredFilled = 0;
+        
+        requiredFields.forEach(fieldId => {
+            if (getElementValue(fieldId).trim()) {
+                requiredFilled++;
+                filledFields++;
+            }
+        });
+        
+        optionalFields.forEach(fieldId => {
             if (getElementValue(fieldId).trim()) {
                 filledFields++;
             }
         });
         
         const progressDots = document.querySelectorAll('.progress-dot');
-        const progressPercentage = (filledFields / allFields.length) * 100;
+        
+        // First dot is always active if any field is filled
+        if (filledFields > 0 || requiredFilled > 0) {
+            progressDots[0]?.classList.add('active');
+        } else {
+            progressDots[0]?.classList.remove('active');
+        }
+        
+        // Calculate progress based on filled fields
+        const progressSteps = Math.min(5, Math.ceil((filledFields / allFields.length) * 5));
         
         progressDots.forEach((dot, index) => {
-            if (index < Math.ceil(progressPercentage / 20)) {
+            if (index < progressSteps) {
                 dot.classList.add('active');
             } else {
                 dot.classList.remove('active');
@@ -178,14 +196,20 @@ document.addEventListener('DOMContentLoaded', () => {
     // Loading overlay functions
     const showLoading = () => {
         const overlay = document.getElementById('loading-overlay');
-        overlay.style.display = 'flex';
-        document.body.style.overflow = 'hidden';
+        if (overlay) {
+            overlay.classList.add('show');
+            overlay.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
     };
 
     const hideLoading = () => {
         const overlay = document.getElementById('loading-overlay');
-        overlay.style.display = 'none';
-        document.body.style.overflow = '';
+        if (overlay) {
+            overlay.classList.remove('show');
+            overlay.style.display = 'none';
+            document.body.style.overflow = '';
+        }
     };
 
     // Reset form with smooth animation
@@ -222,7 +246,7 @@ document.addEventListener('DOMContentLoaded', () => {
         showLoading();
         
         // Simulate processing time for better UX
-        await new Promise(resolve => setTimeout(resolve, 1500));
+        await new Promise(resolve => setTimeout(resolve, 800));
         
         const inputs = {
             judul: getElementValue('judul'),
@@ -369,30 +393,53 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Auto-save functionality (optional)
     const autoSave = () => {
-        const formData = {};
-        const inputs = document.querySelectorAll('input, textarea, select');
-        inputs.forEach(input => {
-            if (input.id) {
-                formData[input.id] = input.value;
+        try {
+            const formData = {};
+            const inputs = document.querySelectorAll('input, textarea, select');
+            let hasContent = false;
+            
+            inputs.forEach(input => {
+                if (input.id && !input.id.includes('output')) {
+                    formData[input.id] = input.value;
+                    if (input.value.trim()) {
+                        hasContent = true;
+                    }
+                }
+            });
+            
+            if (hasContent) {
+                localStorage.setItem('veo3-prompt-data', JSON.stringify(formData));
             }
-        });
-        localStorage.setItem('veo3-prompt-data', JSON.stringify(formData));
+        } catch (e) {
+            console.log('Auto-save failed:', e);
+        }
     };
 
     // Auto-load saved data
     const autoLoad = () => {
-        const savedData = localStorage.getItem('veo3-prompt-data');
-        if (savedData) {
-            try {
+        try {
+            const savedData = localStorage.getItem('veo3-prompt-data');
+            if (savedData) {
                 const formData = JSON.parse(savedData);
+                let hasData = false;
+                
                 Object.keys(formData).forEach(key => {
-                    setElementValue(key, formData[key]);
+                    if (formData[key] && formData[key].trim()) {
+                        setElementValue(key, formData[key]);
+                        hasData = true;
+                    }
                 });
-                updateProgress();
-                showNotification('Data tersimpan berhasil dimuat!', 'info');
-            } catch (e) {
-                console.log('Failed to load saved data');
+                
+                if (hasData) {
+                    updateProgress();
+                    setTimeout(() => {
+                        showNotification('Data tersimpan berhasil dimuat!', 'info');
+                    }, 2000);
+                }
             }
+        } catch (e) {
+            console.log('Failed to load saved data:', e);
+            localStorage.removeItem('veo3-prompt-data');
         }
     };
 
@@ -437,6 +484,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Welcome message
     setTimeout(() => {
-        showNotification('Selamat datang! Mulai isi form untuk membuat prompt AI video profesional. 🎬', 'info');
-    }, 1000);
+        const hasAutoLoadedData = localStorage.getItem('veo3-prompt-data');
+        if (!hasAutoLoadedData) {
+            showNotification('Selamat datang! Mulai isi form untuk membuat prompt AI video profesional. 🎬', 'info');
+        }
+    }, 1500);
 }); 
