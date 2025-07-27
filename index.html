@@ -50,12 +50,12 @@
             </div>
 
             <div class="input-group">
-                <label for="visual">7. Detail Visual Tambahan</label>
+                <label for="kamera">7. Detail Visual Tambahan</label>
                  <div class="visual-details">
-                    <select id="kamera">
+                    <select id="kamera" aria-label="Pilih gerakan kamera">
                         <option value="">Pilih Gerakan Kamera...</option>
                     </select>
-                    <textarea id="visual-tambahan" rows="3" placeholder="Contoh: Pencahayaan: natural dari lampu jalan... Gaya Video/Art Style: cinematic realistis. Kualitas Visual: Resolusi 4K."></textarea>
+                    <textarea id="visual-tambahan" rows="3" placeholder="Contoh: Pencahayaan: natural dari lampu jalan... Gaya Video/Art Style: cinematic realistis. Kualitas Visual: Resolusi 4K." aria-label="Detail visual tambahan"></textarea>
                 </div>
             </div>
 
@@ -87,11 +87,21 @@
         
         <div class="output-container">
             <div class="output-column">
-                <h2>Prompt Bahasa Indonesia (Bisa Diedit)</h2>
+                <div class="output-header">
+                    <h2>Prompt Bahasa Indonesia (Bisa Diedit)</h2>
+                    <button class="copy-btn" id="copy-id-btn" title="Salin ke clipboard">
+                        <i class="fas fa-copy"></i>
+                    </button>
+                </div>
                 <textarea id="output-id" rows="15"></textarea>
             </div>
             <div class="output-column">
-                <h2>Final Prompt (English)</h2>
+                <div class="output-header">
+                    <h2>Final Prompt (English)</h2>
+                    <button class="copy-btn" id="copy-en-btn" title="Salin ke clipboard">
+                        <i class="fas fa-copy"></i>
+                    </button>
+                </div>
                 <textarea id="output-en" rows="15" readonly></textarea>
             </div>
         </div>

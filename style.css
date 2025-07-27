@@ -139,10 +139,36 @@ textarea {
     border-top: 1px solid var(--border-color);
 }
 
+.output-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
 .output-column h2 {
     font-size: 1.2rem;
     color: var(--accent-color);
-    margin-bottom: 1rem;
+    margin: 0;
+}
+
+.copy-btn {
+    background-color: var(--button-bg);
+    color: var(--text-color);
+    border: none;
+    border-radius: 4px;
+    padding: 0.5rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    font-size: 0.9rem;
+}
+
+.copy-btn:hover {
+    background-color: var(--button-hover-bg);
+}
+
+.copy-btn:active {
+    transform: scale(0.95);
 }
 
 .output-column textarea {
@@ -153,4 +179,39 @@ textarea {
 textarea#output-en {
     background-color: #09131f;
     cursor: not-allowed;
-} 
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 1rem;
+        margin: 10px;
+    }
+    
+    .visual-details {
+        flex-direction: column;
+    }
+    
+    .visual-details select,
+    .visual-details textarea {
+        flex-basis: 100%;
+    }
+    
+    .output-container {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .button-group {
+        flex-direction: column;
+    }
+    
+    .output-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+    
+    .output-header h2 {
+        font-size: 1rem;
+    }
+}
