@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-
+    // Camera movements data
     const cameraMovements = [
         { en: "Static Shot", id: "Tangkapan Statis" },
         { en: "Pan Left", id: "Geser Kiri" },
@@ -25,6 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
         { en: "First Person / POV", id: "Sudut Pandang Orang Pertama" }
     ];
 
+    // Initialize camera select options
     const cameraSelect = document.getElementById('kamera');
     cameraMovements.forEach(move => {
         const option = document.createElement('option');
@@ -33,20 +34,196 @@ document.addEventListener('DOMContentLoaded', () => {
         cameraSelect.appendChild(option);
     });
 
-    const getElementValue = id => document.getElementById(id).value;
-    const setElementValue = (id, value) => { document.getElementById(id).value = value; };
+    // Utility functions
+    const getElementValue = id => {
+        const element = document.getElementById(id);
+        return element ? element.value : '';
+    };
+    
+    const setElementValue = (id, value) => {
+        const element = document.getElementById(id);
+        if (element) {
+            element.value = value;
+        }
+    };
 
-    document.getElementById('reset-btn').addEventListener('click', () => {
-        const inputIds = [
-            'judul', 'karakter', 'suara', 'aksi', 'ekspresi', 'latar', 
-            'visual-tambahan', 'suasana', 'ambience', 'dialog', 'negatif',
-            'output-id', 'output-en'
-        ];
-        inputIds.forEach(id => setElementValue(id, ''));
-        document.getElementById('kamera').selectedIndex = 0;
+    // Progress tracking
+    const updateProgress = () => {
+        const requiredFields = ['judul', 'karakter'];
+        const optionalFields = ['suara', 'aksi', 'ekspresi', 'latar', 'visual-tambahan', 'suasana', 'ambience', 'dialog', 'negatif'];
+        const allFields = [...requiredFields, ...optionalFields];
+        
+        let filledFields = 0;
+        allFields.forEach(fieldId => {
+            if (getElementValue(fieldId).trim()) {
+                filledFields++;
+            }
+        });
+        
+        const progressDots = document.querySelectorAll('.progress-dot');
+        const progressPercentage = (filledFields / allFields.length) * 100;
+        
+        progressDots.forEach((dot, index) => {
+            if (index < Math.ceil(progressPercentage / 20)) {
+                dot.classList.add('active');
+            } else {
+                dot.classList.remove('active');
+            }
+        });
+    };
+
+    // Add event listeners to all form inputs for progress tracking
+    const formInputs = document.querySelectorAll('input, textarea, select');
+    formInputs.forEach(input => {
+        input.addEventListener('input', updateProgress);
+        input.addEventListener('change', updateProgress);
     });
 
-    document.getElementById('generate-btn').addEventListener('click', () => {
+    // Enhanced form validation with visual feedback
+    const validateForm = () => {
+        const requiredFields = [
+            { id: 'judul', name: 'Judul Scene' },
+            { id: 'karakter', name: 'Deskripsi Karakter Inti' }
+        ];
+        
+        let isValid = true;
+        let firstErrorField = null;
+        
+        requiredFields.forEach(field => {
+            const element = document.getElementById(field.id);
+            const inputGroup = element.closest('.input-group');
+            
+            if (!getElementValue(field.id).trim()) {
+                inputGroup.style.borderColor = 'var(--accent-danger)';
+                inputGroup.style.boxShadow = '0 0 0 3px rgba(239, 68, 68, 0.1)';
+                
+                if (!firstErrorField) {
+                    firstErrorField = element;
+                }
+                isValid = false;
+                
+                // Remove error styling after 3 seconds
+                setTimeout(() => {
+                    inputGroup.style.borderColor = '';
+                    inputGroup.style.boxShadow = '';
+                }, 3000);
+            } else {
+                inputGroup.style.borderColor = 'var(--accent-success)';
+                inputGroup.style.boxShadow = '0 0 0 3px rgba(16, 185, 129, 0.1)';
+                
+                setTimeout(() => {
+                    inputGroup.style.borderColor = '';
+                    inputGroup.style.boxShadow = '';
+                }, 1000);
+            }
+        });
+        
+        if (!isValid && firstErrorField) {
+            // Show modern notification instead of alert
+            showNotification('Mohon lengkapi field yang wajib diisi!', 'error');
+            firstErrorField.focus();
+            firstErrorField.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+        
+        return isValid;
+    };
+
+    // Modern notification system
+    const showNotification = (message, type = 'info') => {
+        const notification = document.createElement('div');
+        notification.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: ${type === 'error' ? 'var(--accent-danger)' : 
+                        type === 'success' ? 'var(--accent-success)' : 'var(--accent-primary)'};
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-lg);
+            z-index: 10000;
+            font-weight: 500;
+            transform: translateX(100%);
+            transition: transform 0.3s ease-in-out;
+            max-width: 300px;
+            word-wrap: break-word;
+        `;
+        
+        const icon = type === 'error' ? 'fas fa-exclamation-triangle' : 
+                    type === 'success' ? 'fas fa-check-circle' : 'fas fa-info-circle';
+        
+        notification.innerHTML = `
+            <i class="${icon}" style="margin-right: 0.5rem;"></i>
+            ${message}
+        `;
+        
+        document.body.appendChild(notification);
+        
+        // Animate in
+        setTimeout(() => {
+            notification.style.transform = 'translateX(0)';
+        }, 100);
+        
+        // Auto remove after 4 seconds
+        setTimeout(() => {
+            notification.style.transform = 'translateX(100%)';
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.parentNode.removeChild(notification);
+                }
+            }, 300);
+        }, 4000);
+    };
+
+    // Loading overlay functions
+    const showLoading = () => {
+        const overlay = document.getElementById('loading-overlay');
+        overlay.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+    };
+
+    const hideLoading = () => {
+        const overlay = document.getElementById('loading-overlay');
+        overlay.style.display = 'none';
+        document.body.style.overflow = '';
+    };
+
+    // Reset form with smooth animation
+    document.getElementById('reset-btn').addEventListener('click', () => {
+        if (confirm('Apakah Anda yakin ingin mereset semua field? Data yang sudah diisi akan hilang.')) {
+            const inputIds = [
+                'judul', 'karakter', 'suara', 'aksi', 'ekspresi', 'latar', 
+                'visual-tambahan', 'suasana', 'ambience', 'dialog', 'negatif',
+                'output-id', 'output-en'
+            ];
+            
+            // Add fade out animation
+            const formContainer = document.querySelector('.form-container');
+            formContainer.style.opacity = '0.5';
+            
+            setTimeout(() => {
+                inputIds.forEach(id => setElementValue(id, ''));
+                document.getElementById('kamera').selectedIndex = 0;
+                updateProgress();
+                
+                // Fade back in
+                formContainer.style.opacity = '1';
+                showNotification('Form berhasil direset!', 'success');
+            }, 200);
+        }
+    });
+
+    // Enhanced prompt generation with loading
+    document.getElementById('generate-btn').addEventListener('click', async () => {
+        if (!validateForm()) {
+            return;
+        }
+
+        showLoading();
+        
+        // Simulate processing time for better UX
+        await new Promise(resolve => setTimeout(resolve, 1500));
+        
         const inputs = {
             judul: getElementValue('judul'),
             karakter: getElementValue('karakter'),
@@ -62,34 +239,204 @@ document.addEventListener('DOMContentLoaded', () => {
             negatif: getElementValue('negatif'),
         };
 
+        // Helper function to add section only if content exists
+        const addSection = (title, content) => content.trim() ? `**${title}:**\n${content.trim()}\n\n` : '';
+
         // Generate Indonesian Prompt
         let promptID = `**Judul Scene:** ${inputs.judul}\n\n`;
-        promptID += `**Karakter:**\n${inputs.karakter}\n\n`;
-        promptID += `**Detail Suara:**\n${inputs.suara}\n\n`;
-        promptID += `**Aksi:**\n${inputs.aksi}\n\n`;
-        promptID += `**Ekspresi:**\n${inputs.ekspresi}\n\n`;
-        promptID += `**Latar & Waktu:**\n${inputs.latar}\n\n`;
-        promptID += `**Detail Visual:**\nGerakan Kamera: ${inputs.kamera}. ${inputs.visualTambahan}\n\n`;
-        promptID += `**Suasana:**\n${inputs.suasana}\n\n`;
-        promptID += `**Suara Lingkungan:**\n${inputs.ambience}\n\n`;
-        promptID += `**Dialog:**\n${inputs.dialog}\n\n`;
-        promptID += `**Negative Prompt:**\n${inputs.negatif}`;
+        promptID += addSection('Karakter', inputs.karakter);
+        promptID += addSection('Detail Suara', inputs.suara);
+        promptID += addSection('Aksi', inputs.aksi);
+        promptID += addSection('Ekspresi', inputs.ekspresi);
+        promptID += addSection('Latar & Waktu', inputs.latar);
+        
+        // Handle camera movement and visual details
+        let visualSection = '';
+        if (inputs.kamera || inputs.visualTambahan.trim()) {
+            visualSection = '**Detail Visual:**\n';
+            if (inputs.kamera) visualSection += `Gerakan Kamera: ${inputs.kamera}. `;
+            if (inputs.visualTambahan.trim()) visualSection += inputs.visualTambahan.trim();
+            visualSection += '\n\n';
+        }
+        promptID += visualSection;
+        
+        promptID += addSection('Suasana', inputs.suasana);
+        promptID += addSection('Suara Lingkungan', inputs.ambience);
+        promptID += addSection('Dialog', inputs.dialog);
+        promptID += addSection('Negative Prompt', inputs.negatif);
 
+        // Remove trailing newlines
+        promptID = promptID.trim();
         setElementValue('output-id', promptID);
 
         // Generate English Prompt
         let promptEN = `**Scene Title:** ${inputs.judul}\n\n`;
-        promptEN += `**Core Character:**\n${inputs.karakter}\n\n`;
-        promptEN += `**Character Voice Details:**\n${inputs.suara}\n\n`;
-        promptEN += `**Character Action:**\n${inputs.aksi}\n\n`;
-        promptEN += `**Character Expression:**\n${inputs.ekspresi}\n\n`;
-        promptEN += `**Setting & Time:**\n${inputs.latar}\n\n`;
-        promptEN += `**Additional Visual Details:**\nCamera Movement: ${inputs.kamera}. ${inputs.visualTambahan}\n\n`;
-        promptEN += `**Overall Atmosphere:**\n${inputs.suasana}\n\n`;
-        promptEN += `**Environmental Sound/Ambiance:**\n${inputs.ambience}\n\n`;
-        promptEN += `**Character Dialog (in Indonesian):**\n${inputs.dialog}\n\n`;
-        promptEN += `**Negative Prompt:**\n${inputs.negatif}`;
+        promptEN += addSection('Core Character', inputs.karakter);
+        promptEN += addSection('Character Voice Details', inputs.suara);
+        promptEN += addSection('Character Action', inputs.aksi);
+        promptEN += addSection('Character Expression', inputs.ekspresi);
+        promptEN += addSection('Setting & Time', inputs.latar);
         
+        // Handle camera movement and visual details for English
+        let visualSectionEN = '';
+        if (inputs.kamera || inputs.visualTambahan.trim()) {
+            visualSectionEN = '**Additional Visual Details:**\n';
+            if (inputs.kamera) visualSectionEN += `Camera Movement: ${inputs.kamera}. `;
+            if (inputs.visualTambahan.trim()) visualSectionEN += inputs.visualTambahan.trim();
+            visualSectionEN += '\n\n';
+        }
+        promptEN += visualSectionEN;
+        
+        promptEN += addSection('Overall Atmosphere', inputs.suasana);
+        promptEN += addSection('Environmental Sound/Ambiance', inputs.ambience);
+        promptEN += addSection('Character Dialog (in Indonesian)', inputs.dialog);
+        promptEN += addSection('Negative Prompt', inputs.negatif);
+        
+        // Remove trailing newlines
+        promptEN = promptEN.trim();
         setElementValue('output-en', promptEN);
+        
+        hideLoading();
+        
+        // Scroll to output with smooth animation
+        document.querySelector('.output-container').scrollIntoView({ 
+            behavior: 'smooth', 
+            block: 'start' 
+        });
+        
+        showNotification('Prompt berhasil dibuat! 🎉', 'success');
     });
+
+    // Enhanced copy to clipboard functionality
+    const copyToClipboard = async (text, buttonId) => {
+        const button = document.getElementById(buttonId);
+        const originalContent = button.innerHTML;
+        
+        try {
+            await navigator.clipboard.writeText(text);
+            
+            button.innerHTML = '<i class="fas fa-check"></i><span>Tersalin!</span>';
+            button.style.background = 'var(--accent-success)';
+            
+            setTimeout(() => {
+                button.innerHTML = originalContent;
+                button.style.background = '';
+            }, 2000);
+            
+            showNotification('Prompt berhasil disalin ke clipboard!', 'success');
+            
+        } catch (err) {
+            // Fallback for older browsers
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            textArea.style.position = 'fixed';
+            textArea.style.opacity = '0';
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textArea);
+            
+            button.innerHTML = '<i class="fas fa-check"></i><span>Tersalin!</span>';
+            button.style.background = 'var(--accent-success)';
+            
+            setTimeout(() => {
+                button.innerHTML = originalContent;
+                button.style.background = '';
+            }, 2000);
+            
+            showNotification('Prompt berhasil disalin ke clipboard!', 'success');
+        }
+    };
+
+    // Copy button event listeners
+    document.getElementById('copy-id-btn').addEventListener('click', () => {
+        const text = getElementValue('output-id');
+        if (text.trim()) {
+            copyToClipboard(text, 'copy-id-btn');
+        } else {
+            showNotification('Tidak ada prompt untuk disalin. Generate prompt terlebih dahulu!', 'error');
+        }
+    });
+
+    document.getElementById('copy-en-btn').addEventListener('click', () => {
+        const text = getElementValue('output-en');
+        if (text.trim()) {
+            copyToClipboard(text, 'copy-en-btn');
+        } else {
+            showNotification('Tidak ada prompt untuk disalin. Generate prompt terlebih dahulu!', 'error');
+        }
+    });
+
+    // Auto-save functionality (optional)
+    const autoSave = () => {
+        const formData = {};
+        const inputs = document.querySelectorAll('input, textarea, select');
+        inputs.forEach(input => {
+            if (input.id) {
+                formData[input.id] = input.value;
+            }
+        });
+        localStorage.setItem('veo3-prompt-data', JSON.stringify(formData));
+    };
+
+    // Auto-load saved data
+    const autoLoad = () => {
+        const savedData = localStorage.getItem('veo3-prompt-data');
+        if (savedData) {
+            try {
+                const formData = JSON.parse(savedData);
+                Object.keys(formData).forEach(key => {
+                    setElementValue(key, formData[key]);
+                });
+                updateProgress();
+                showNotification('Data tersimpan berhasil dimuat!', 'info');
+            } catch (e) {
+                console.log('Failed to load saved data');
+            }
+        }
+    };
+
+    // Auto-save every 30 seconds
+    setInterval(autoSave, 30000);
+
+    // Auto-save on page unload
+    window.addEventListener('beforeunload', autoSave);
+
+    // Load saved data on page load
+    autoLoad();
+
+    // Keyboard shortcuts
+    document.addEventListener('keydown', (e) => {
+        // Ctrl/Cmd + Enter to generate
+        if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+            e.preventDefault();
+            document.getElementById('generate-btn').click();
+        }
+        
+        // Ctrl/Cmd + R to reset (with confirmation)
+        if ((e.ctrlKey || e.metaKey) && e.key === 'r') {
+            e.preventDefault();
+            document.getElementById('reset-btn').click();
+        }
+    });
+
+    // Initialize progress on page load
+    updateProgress();
+
+    // Add smooth focus animations
+    const inputs = document.querySelectorAll('input, textarea, select');
+    inputs.forEach(input => {
+        input.addEventListener('focus', (e) => {
+            e.target.closest('.input-group').style.transform = 'translateY(-2px)';
+        });
+        
+        input.addEventListener('blur', (e) => {
+            e.target.closest('.input-group').style.transform = '';
+        });
+    });
+
+    // Welcome message
+    setTimeout(() => {
+        showNotification('Selamat datang! Mulai isi form untuk membuat prompt AI video profesional. 🎬', 'info');
+    }, 1000);
 }); 

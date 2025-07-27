@@ -3,100 +3,180 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Veo 3 Prompt Generator</title>
+    <title>Veo 3 Prompt Generator - Professional AI Video Prompt Creator</title>
+    <meta name="description" content="Generate professional AI video prompts for Veo 3 with this modern, user-friendly tool by Muhammad Faqih">
     <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>Veo 3 Prompt Generator</h1>
-            <p class="subtitle">by Muhammad Faqih</p>
+            <h1><i class="fas fa-video" style="margin-right: 0.5rem;"></i>Veo 3 Prompt Generator</h1>
+            <p class="subtitle">Professional AI Video Prompt Creator</p>
             <div class="social">
                 <i class="fab fa-tiktok"></i>
                 <span>@muhamadfa.qih</span>
             </div>
         </header>
 
-        <div class="form-container">
-            <div class="input-group">
-                <label for="judul">1. Judul Scene</label>
-                <input type="text" id="judul" placeholder="Contoh: Terminal bus malam">
+        <main class="main-content">
+            <div class="progress-indicator">
+                <div class="progress-dot active" data-step="1"></div>
+                <div class="progress-dot" data-step="2"></div>
+                <div class="progress-dot" data-step="3"></div>
+                <div class="progress-dot" data-step="4"></div>
+                <div class="progress-dot" data-step="5"></div>
             </div>
 
-            <div class="input-group">
-                <label for="karakter">2. Deskripsi Karakter Inti</label>
-                <textarea id="karakter" rows="6" placeholder="Contoh: Seorang vlogger wanita muda asal Minang berusia 27 tahun. Perawakan/Bentuk Tubuh: tubuh mungil, tinggi 158cm, bentuk badan proporsional..."></textarea>
-            </div>
-
-            <div class="input-group">
-                <label for="suara">3. Detail Suara Karakter</label>
-                <textarea id="suara" rows="5" placeholder="Contoh: Dia berbicara dengan suara wanita muda yang hangat dan penuh semangat. Nada: mezzo-soprano..."></textarea>
-            </div>
-
-            <div class="input-group">
-                <label for="aksi">4. Aksi Karakter</label>
-                <textarea id="aksi" rows="2" placeholder="Contoh: berjalan di sekitar terminal bus malam sambil melihat-lihat aktivitas penumpang dan pedagang."></textarea>
-            </div>
-
-            <div class="input-group">
-                <label for="ekspresi">5. Ekspresi Karakter</label>
-                <textarea id="ekspresi" rows="2" placeholder="Contoh: Karakter menunjukkan ekspresi kagum dan antusias, sering tersenyum sambil melirik kamera."></textarea>
-            </div>
-
-            <div class="input-group">
-                <label for="latar">6. Latar Tempat & Waktu</label>
-                <textarea id="latar" rows="3" placeholder="Contoh: latar tempat: di terminal bus antar kota malam hari, terdapat pedagang kaki lima... Waktu: malam hari, hujan rintik-rintik."></textarea>
-            </div>
-
-            <div class="input-group">
-                <label for="visual">7. Detail Visual Tambahan</label>
-                 <div class="visual-details">
-                    <select id="kamera">
-                        <option value="">Pilih Gerakan Kamera...</option>
-                    </select>
-                    <textarea id="visual-tambahan" rows="3" placeholder="Contoh: Pencahayaan: natural dari lampu jalan... Gaya Video/Art Style: cinematic realistis. Kualitas Visual: Resolusi 4K."></textarea>
+            <form class="form-container" id="prompt-form">
+                <div class="input-group" data-step="1">
+                    <label for="judul">
+                        <i class="fas fa-heading" style="margin-right: 0.5rem; color: var(--accent-primary);"></i>
+                        1. Judul Scene
+                    </label>
+                    <input type="text" id="judul" placeholder="Contoh: Terminal bus malam yang ramai" required>
                 </div>
-            </div>
 
-            <div class="input-group">
-                <label for="suasana">8. Suasana Keseluruhan</label>
-                <textarea id="suasana" rows="2" placeholder="Contoh: Suasana sibuk, ramai, dengan kesan perjalanan malam yang hidup dan dinamis meskipun hujan."></textarea>
-            </div>
+                <div class="input-group" data-step="2">
+                    <label for="karakter">
+                        <i class="fas fa-user" style="margin-right: 0.5rem; color: var(--accent-primary);"></i>
+                        2. Deskripsi Karakter Inti
+                    </label>
+                    <textarea id="karakter" rows="6" placeholder="Contoh: Seorang vlogger wanita muda asal Minang berusia 27 tahun. Perawakan/Bentuk Tubuh: tubuh mungil, tinggi 158cm, bentuk badan proporsional, berkulit sawo matang, rambut hitam panjang bergelombang, mata coklat ekspresif..." required></textarea>
+                </div>
 
-            <div class="input-group">
-                <label for="ambience">9. Suara Lingkungan/Ambiance</label>
-                <textarea id="ambience" rows="2" placeholder="Contoh: SOUND: suara mesin bus menyala, pengumuman dari pengeras suara, derai hujan ringan..."></textarea>
-            </div>
+                <div class="input-group" data-step="2">
+                    <label for="suara">
+                        <i class="fas fa-microphone" style="margin-right: 0.5rem; color: var(--accent-primary);"></i>
+                        3. Detail Suara Karakter
+                    </label>
+                    <textarea id="suara" rows="5" placeholder="Contoh: Dia berbicara dengan suara wanita muda yang hangat dan penuh semangat. Nada: mezzo-soprano dengan intonasi khas Minang yang lembut namun tegas..."></textarea>
+                </div>
 
-            <div class="input-group">
-                <label for="dialog">10. Dialog Karakter (dalam Bahasa Indonesia)</label>
-                <textarea id="dialog" rows="3" placeholder="Contoh: DIALOG dalam Bahasa Indonesia: Karakter berkata: Tiap kota punya terminal kayak gini, dan aku suka banget suasana malamnya…"></textarea>
+                <div class="input-group" data-step="3">
+                    <label for="aksi">
+                        <i class="fas fa-running" style="margin-right: 0.5rem; color: var(--accent-primary);"></i>
+                        4. Aksi Karakter
+                    </label>
+                    <textarea id="aksi" rows="3" placeholder="Contoh: Berjalan di sekitar terminal bus malam sambil melihat-lihat aktivitas penumpang dan pedagang, sesekali menunjuk ke arah objek yang menarik perhatiannya."></textarea>
+                </div>
+
+                <div class="input-group" data-step="3">
+                    <label for="ekspresi">
+                        <i class="fas fa-smile" style="margin-right: 0.5rem; color: var(--accent-primary);"></i>
+                        5. Ekspresi Karakter
+                    </label>
+                    <textarea id="ekspresi" rows="3" placeholder="Contoh: Karakter menunjukkan ekspresi kagum dan antusias, sering tersenyum sambil melirik kamera dengan mata berbinar-binar penuh keingintahuan."></textarea>
+                </div>
+
+                <div class="input-group" data-step="4">
+                    <label for="latar">
+                        <i class="fas fa-map-marker-alt" style="margin-right: 0.5rem; color: var(--accent-primary);"></i>
+                        6. Latar Tempat & Waktu
+                    </label>
+                    <textarea id="latar" rows="4" placeholder="Contoh: Latar tempat: Di terminal bus antar kota malam hari, terdapat pedagang kaki lima yang menjual makanan dan minuman, bangku-bangku penumpang, papan informasi jadwal bus. Waktu: Malam hari sekitar pukul 21:00, hujan rintik-rintik."></textarea>
+                </div>
+
+                <div class="input-group" data-step="4">
+                    <label for="kamera">
+                        <i class="fas fa-video" style="margin-right: 0.5rem; color: var(--accent-primary);"></i>
+                        7. Detail Visual Tambahan
+                    </label>
+                    <div class="visual-details">
+                        <select id="kamera" aria-label="Pilih gerakan kamera">
+                            <option value="">Pilih Gerakan Kamera...</option>
+                        </select>
+                        <textarea id="visual-tambahan" rows="4" placeholder="Contoh: Pencahayaan: Natural dari lampu jalan dan lampu terminal yang hangat kekuningan. Gaya Video/Art Style: Cinematic realistis dengan depth of field yang shallow. Kualitas Visual: Resolusi 4K dengan color grading yang warm dan cozy." aria-label="Detail visual tambahan"></textarea>
+                    </div>
+                </div>
+
+                <div class="input-group" data-step="4">
+                    <label for="suasana">
+                        <i class="fas fa-cloud" style="margin-right: 0.5rem; color: var(--accent-primary);"></i>
+                        8. Suasana Keseluruhan
+                    </label>
+                    <textarea id="suasana" rows="3" placeholder="Contoh: Suasana sibuk namun tenang, ramai dengan kesan perjalanan malam yang hidup dan dinamis meskipun hujan. Ada kehangatan dari interaksi manusia di tengah malam."></textarea>
+                </div>
+
+                <div class="input-group" data-step="5">
+                    <label for="ambience">
+                        <i class="fas fa-volume-up" style="margin-right: 0.5rem; color: var(--accent-primary);"></i>
+                        9. Suara Lingkungan/Ambiance
+                    </label>
+                    <textarea id="ambience" rows="3" placeholder="Contoh: SOUND: Suara mesin bus yang menyala halus, pengumuman dari pengeras suara terminal, derai hujan ringan, percakapan penumpang yang samar, suara pedagang yang menawarkan dagangannya."></textarea>
+                </div>
+
+                <div class="input-group" data-step="5">
+                    <label for="dialog">
+                        <i class="fas fa-comment" style="margin-right: 0.5rem; color: var(--accent-primary);"></i>
+                        10. Dialog Karakter (dalam Bahasa Indonesia)
+                    </label>
+                    <textarea id="dialog" rows="4" placeholder="Contoh: DIALOG dalam Bahasa Indonesia: Karakter berkata dengan nada antusias: 'Tiap kota punya terminal kayak gini, dan aku suka banget suasana malamnya. Ada cerita di setiap sudutnya, dari orang-orang yang lagi perjalanan jauh.'"></textarea>
+                </div>
+                
+                <div class="input-group" data-step="5">
+                    <label for="negatif">
+                        <i class="fas fa-ban" style="margin-right: 0.5rem; color: var(--accent-danger);"></i>
+                        11. Negative Prompt
+                    </label>
+                    <textarea id="negatif" rows="4" placeholder="Contoh: Hindari: Teks di layar, subtitle, tulisan di video, font, logo yang mengganggu, distorsi wajah, artefak digital, anomali tubuh, pencahayaan yang terlalu terang atau gelap, kualitas video yang buruk, gerakan yang tidak natural."></textarea>
+                </div>
+            </form>
+
+            <div class="button-group">
+                <button type="button" class="btn" id="generate-btn">
+                    <i class="fas fa-magic" style="margin-right: 0.5rem;"></i>
+                    Generate Prompt
+                </button>
+                <button type="button" class="btn" id="reset-btn">
+                    <i class="fas fa-redo" style="margin-right: 0.5rem;"></i>
+                    Reset Form
+                </button>
             </div>
             
-            <div class="input-group">
-                <label for="negatif">11. Negative Prompt</label>
-                <textarea id="negatif" rows="3" placeholder="Contoh: Hindari: teks di layar, subtitle, tulisan di video, font, logo, distorsi, artefak, anomali..."></textarea>
+            <div class="output-container">
+                <div class="output-column">
+                    <div class="output-header">
+                        <h2>
+                            <i class="fas fa-flag" style="margin-right: 0.5rem; color: #ff6b6b;"></i>
+                            Prompt Bahasa Indonesia
+                        </h2>
+                        <button class="copy-btn" id="copy-id-btn" title="Salin ke clipboard">
+                            <i class="fas fa-copy"></i>
+                            <span>Salin</span>
+                        </button>
+                    </div>
+                    <textarea id="output-id" rows="15" placeholder="Prompt dalam bahasa Indonesia akan muncul di sini setelah Anda mengklik 'Generate Prompt'..."></textarea>
+                </div>
+                <div class="output-column">
+                    <div class="output-header">
+                        <h2>
+                            <i class="fas fa-flag" style="margin-right: 0.5rem; color: #4dabf7;"></i>
+                            Final Prompt (English)
+                        </h2>
+                        <button class="copy-btn" id="copy-en-btn" title="Copy to clipboard">
+                            <i class="fas fa-copy"></i>
+                            <span>Copy</span>
+                        </button>
+                    </div>
+                    <textarea id="output-en" rows="15" readonly placeholder="English prompt will appear here after generation..."></textarea>
+                </div>
             </div>
-        </div>
-
-        <div class="button-group">
-            <button id="generate-btn">Generate Prompt</button>
-            <button id="reset-btn" type="button">Reset</button>
-        </div>
-        
-        <div class="output-container">
-            <div class="output-column">
-                <h2>Prompt Bahasa Indonesia (Bisa Diedit)</h2>
-                <textarea id="output-id" rows="15"></textarea>
-            </div>
-            <div class="output-column">
-                <h2>Final Prompt (English)</h2>
-                <textarea id="output-en" rows="15" readonly></textarea>
-            </div>
-        </div>
-
+        </main>
     </div>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 1000; display: flex; align-items: center; justify-content: center;">
+        <div style="background: var(--secondary-bg); padding: 2rem; border-radius: var(--radius-lg); text-align: center; border: 1px solid var(--border-color);">
+            <div class="loading">
+                <i class="fas fa-cog fa-spin" style="font-size: 2rem; color: var(--accent-primary); margin-bottom: 1rem;"></i>
+                <p style="margin: 0; color: var(--text-primary);">Generating your prompt...</p>
+            </div>
+        </div>
+    </div>
+
     <script src="script.js"></script>
 </body>
 </html> 
