@@ -66,6 +66,11 @@ header .social {
     color: var(--text-color);
 }
 
+.required {
+    color: #ff6b6b;
+    font-weight: bold;
+}
+
 input[type="text"],
 textarea,
 select {
@@ -83,17 +88,28 @@ textarea {
     resize: vertical;
 }
 
+input[type="text"]:focus,
+textarea:focus,
+select:focus {
+    outline: none;
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 2px rgba(119, 141, 169, 0.3);
+}
+
 .visual-details {
     display: flex;
     gap: 1rem;
+    flex-wrap: wrap;
 }
 
 .visual-details select {
     flex-basis: 40%;
+    min-width: 200px;
 }
 
 .visual-details textarea {
     flex-basis: 60%;
+    min-width: 250px;
 }
 
 .button-group {
@@ -139,6 +155,32 @@ textarea {
     border-top: 1px solid var(--border-color);
 }
 
+@media (max-width: 768px) {
+    .output-container {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .visual-details {
+        flex-direction: column;
+    }
+    
+    .visual-details select,
+    .visual-details textarea {
+        flex-basis: 100%;
+        min-width: auto;
+    }
+    
+    .button-group {
+        flex-direction: column;
+    }
+    
+    .container {
+        padding: 1rem;
+        margin: 10px;
+    }
+}
+
 .output-column h2 {
     font-size: 1.2rem;
     color: var(--accent-color);
@@ -153,4 +195,25 @@ textarea {
 textarea#output-en {
     background-color: #09131f;
     cursor: not-allowed;
+}
+
+.copy-btn {
+    width: 100%;
+    padding: 0.5rem;
+    margin-top: 0.5rem;
+    background-color: var(--accent-color);
+    color: var(--text-color);
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background-color 0.3s ease;
+}
+
+.copy-btn:hover {
+    background-color: var(--button-hover-bg);
+}
+
+.copy-btn:active {
+    transform: scale(0.98);
 } 
