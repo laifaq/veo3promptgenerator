@@ -20,8 +20,8 @@
 
         <div class="form-container">
             <div class="input-group">
-                <label for="judul">1. Judul Scene</label>
-                <input type="text" id="judul" placeholder="Contoh: Terminal bus malam">
+                <label for="judul">1. Judul Scene <span class="required">*</span></label>
+                <input type="text" id="judul" placeholder="Contoh: Terminal bus malam" required>
             </div>
 
             <div class="input-group">
@@ -51,7 +51,7 @@
 
             <div class="input-group">
                 <label for="visual">7. Detail Visual Tambahan</label>
-                 <div class="visual-details">
+                <div class="visual-details">
                     <select id="kamera">
                         <option value="">Pilih Gerakan Kamera...</option>
                     </select>
@@ -89,10 +89,12 @@
             <div class="output-column">
                 <h2>Prompt Bahasa Indonesia (Bisa Diedit)</h2>
                 <textarea id="output-id" rows="15"></textarea>
+                <button id="copy-id-btn" class="copy-btn">Copy Indonesian Prompt</button>
             </div>
             <div class="output-column">
                 <h2>Final Prompt (English)</h2>
                 <textarea id="output-en" rows="15" readonly></textarea>
+                <button id="copy-en-btn" class="copy-btn">Copy English Prompt</button>
             </div>
         </div>
 
