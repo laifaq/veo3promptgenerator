@@ -1,4 +1,332 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // --- Constants & Config ---
+    const cameraMovements = [
+        { en: "Static Shot", id: "Tangkapan Statis" },
+        { en: "Pan Left", id: "Geser Kiri" },
+        { en: "Pan Right", id: "Geser Kanan" },
+        { en: "Pan Up", id: "Geser Atas" },
+        { en: "Pan Down", id: "Geser Bawah" },
+        { en: "Tilt Up", id: "Miring ke Atas" },
+        { en: "Tilt Down", id: "Miring ke Bawah" },
+        { en: "Roll Left", id: "Putar Kiri" },
+        { en: "Roll Right", id: "Putar Kanan" },
+        { en: "Zoom In", id: "Perbesar" },
+        { en: "Zoom Out", id: "Perkecil" },
+        { en: "Dolly In", id: "Dolly Masuk" },
+        { en: "Dolly Out", id: "Dolly Keluar" },
+        { en: "Truck Left", id: "Geser Kamera ke Kiri" },
+        { en: "Truck Right", id: "Geser Kamera ke Kanan" },
+        { en: "Crane Up", id: "Angkat Kamera ke Atas" },
+        { en: "Crane Down", id: "Turunkan Kamera" },
+        { en: "Tracking Shot", id: "Tangkapan Mengikuti" },
+        { en: "3D Rotation", id: "Rotasi 3D" },
+        { en: "Orbit", id: "Mengorbit" },
+        { en: "Shake", id: "Guncang" },
+        { en: "First Person / POV", id: "Sudut Pandang Orang Pertama" }
+    ];
+
+    const STORAGE_KEY = 'veo3-prompt-data-v2';
+    
+    // --- DOM Elements ---
+    const form = document.getElementById('prompt-form');
+    const scrollContainer = document.querySelector('.scroll-container');
+    const navItems = document.querySelectorAll('.nav-item');
+    const sections = document.querySelectorAll('.form-section');
+    const cameraSelect = document.getElementById('kamera');
+    
+    // --- Initialization ---
+    function init() {
+        populateCameraOptions();
+        setupEventListeners();
+        setupScrollSpy();
+        loadSavedData();
+        showNotification('Welcome! Ready to create cinematic prompts.', 'info');
+    }
+
+    function populateCameraOptions() {
+        cameraMovements.forEach(move => {
+            const option = document.createElement('option');
+            option.value = move.en;
+            option.textContent = `${move.en} (${move.id})`;
+            cameraSelect.appendChild(option);
+        });
+    }
+
+    // --- Core Logic ---
+    function generatePrompt() {
+        if (!validateForm()) return;
+
+        showLoading();
+
+        // Simulate "thinking" time for effect
+        setTimeout(() => {
+            const data = getFormData();
+            const promptID = buildPromptID(data);
+            const promptEN = buildPromptEN(data);
+
+            // Update UI
+            document.getElementById('output-id').value = promptID;
+            document.getElementById('output-en').value = promptEN;
+            
+            // Update status indicator
+            const statusText = document.querySelector('.status-text');
+            const statusDot = document.querySelector('.status-dot');
+            statusText.textContent = "Generated just now";
+            statusDot.style.background = "var(--accent-secondary)";
+            statusDot.style.boxShadow = "0 0 10px var(--accent-secondary)";
+
+            hideLoading();
+            showNotification('Prompts generated successfully!', 'success');
+            
+            // Scroll output into view on mobile
+            if (window.innerWidth <= 1024) {
+                document.getElementById('output-panel').scrollIntoView({ behavior: 'smooth' });
+            }
+        }, 1200);
+    }
+
+    function getFormData() {
+        return {
+            judul: getValue('judul'),
+            karakter: getValue('karakter'),
+            aksi: getValue('aksi'),
+            suara: getValue('suara'),
+            ekspresi: getValue('ekspresi'),
+            dialog: getValue('dialog'),
+            latar: getValue('latar'),
+            kamera: getValue('kamera'),
+            visualTambahan: getValue('visual-tambahan'),
+            suasana: getValue('suasana'),
+            ambience: getValue('ambience'),
+            negatif: getValue('negatif')
+        };
+    }
+
+    function buildPromptID(data) {
+        let parts = [];
+        parts.push(`**Judul Scene:** ${data.judul}`);
+        if(data.karakter) parts.push(`**Karakter:** ${data.karakter}`);
+        if(data.aksi) parts.push(`**Aksi:** ${data.aksi}`);
+        if(data.suara) parts.push(`**Detail Suara:** ${data.suara}`);
+        if(data.ekspresi) parts.push(`**Ekspresi:** ${data.ekspresi}`);
+        if(data.dialog) parts.push(`**Dialog:** "${data.dialog}"`);
+        
+        let visuals = [];
+        if(data.latar) visuals.push(`Latar & Waktu: ${data.latar}`);
+        if(data.kamera) visuals.push(`Gerakan Kamera: ${data.kamera}`);
+        if(data.visualTambahan) visuals.push(`Detail Visual: ${data.visualTambahan}`);
+        if(visuals.length > 0) parts.push(`**Visual & Latar:**\n${visuals.join('\n')}`);
+
+        if(data.suasana) parts.push(`**Suasana:** ${data.suasana}`);
+        if(data.ambience) parts.push(`**Suara Lingkungan:** ${data.ambience}`);
+        if(data.negatif) parts.push(`**Negative Prompt:** ${data.negatif}`);
+
+        return parts.join('\n\n');
+    }
+
+    function buildPromptEN(data) {
+        // Keeps user content but changes headers to English
+        let parts = [];
+        parts.push(`**Scene Title:** ${data.judul}`);
+        if(data.karakter) parts.push(`**Core Character:** ${data.karakter}`);
+        if(data.aksi) parts.push(`**Character Action:** ${data.aksi}`);
+        if(data.suara) parts.push(`**Voice Details:** ${data.suara}`);
+        if(data.ekspresi) parts.push(`**Expression:** ${data.ekspresi}`);
+        if(data.dialog) parts.push(`**Dialog (ID):** "${data.dialog}"`);
+        
+        let visuals = [];
+        if(data.latar) visuals.push(`Setting & Time: ${data.latar}`);
+        if(data.kamera) visuals.push(`Camera Movement: ${data.kamera}`);
+        if(data.visualTambahan) visuals.push(`Visual Details: ${data.visualTambahan}`);
+        if(visuals.length > 0) parts.push(`**Visuals & Setting:**\n${visuals.join('\n')}`);
+
+        if(data.suasana) parts.push(`**Atmosphere:** ${data.suasana}`);
+        if(data.ambience) parts.push(`**Environment Sound:** ${data.ambience}`);
+        if(data.negatif) parts.push(`**Negative Prompt:** ${data.negatif}`);
+
+        return parts.join('\n\n');
+    }
+
+    // --- Validation & Utilities ---
+    function validateForm() {
+        const required = ['judul', 'karakter'];
+        let isValid = true;
+        let firstError = null;
+
+        required.forEach(id => {
+            const el = document.getElementById(id);
+            if (!el.value.trim()) {
+                isValid = false;
+                el.parentElement.classList.add('error');
+                // Flash error style
+                el.style.borderColor = 'var(--accent-danger)';
+                setTimeout(() => el.style.borderColor = '', 2000);
+                if (!firstError) firstError = el;
+            }
+        });
+
+        if (!isValid) {
+            showNotification('Please fill in the required Core Scene fields.', 'error');
+            firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            firstError.focus();
+        }
+        return isValid;
+    }
+
+    function getValue(id) { return document.getElementById(id).value.trim(); }
+
+    // --- Notifications & Loading ---
+    function showNotification(msg, type = 'info') {
+        const container = document.getElementById('notification-container');
+        const toast = document.createElement('div');
+        
+        // Inline styles for the toast to ensure it works with new CSS
+        toast.style.background = type === 'error' ? 'rgba(239, 68, 68, 0.9)' : 
+                                 type === 'success' ? 'rgba(16, 185, 129, 0.9)' : 
+                                 'rgba(99, 102, 241, 0.9)';
+        toast.style.color = '#fff';
+        toast.style.padding = '0.75rem 1.25rem';
+        toast.style.borderRadius = '0.5rem';
+        toast.style.boxShadow = '0 10px 15px -3px rgba(0, 0, 0, 0.1)';
+        toast.style.backdropFilter = 'blur(4px)';
+        toast.style.fontWeight = '500';
+        toast.style.fontSize = '0.9rem';
+        toast.style.display = 'flex';
+        toast.style.alignItems = 'center';
+        toast.style.gap = '0.5rem';
+        toast.style.transform = 'translateX(100%)';
+        toast.style.transition = 'transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)';
+        
+        const icon = type === 'error' ? 'fa-exclamation-circle' : 
+                     type === 'success' ? 'fa-check-circle' : 'fa-info-circle';
+        
+        toast.innerHTML = `<i class="fas ${icon}"></i> <span>${msg}</span>`;
+        container.appendChild(toast);
+
+        // Animate
+        requestAnimationFrame(() => toast.style.transform = 'translateX(0)');
+
+        setTimeout(() => {
+            toast.style.transform = 'translateX(120%)';
+            setTimeout(() => toast.remove(), 300);
+        }, 3000);
+    }
+
+    function showLoading() {
+        document.getElementById('loading-overlay').classList.remove('hidden');
+    }
+    function hideLoading() {
+        document.getElementById('loading-overlay').classList.add('hidden');
+    }
+
+    // --- Clipbard & Reset ---
+    async function copyToClipboard(id, btnId) {
+        const text = document.getElementById(id).value;
+        if (!text) {
+            showNotification('Nothing to copy yet!', 'error');
+            return;
+        }
+
+        try {
+            await navigator.clipboard.writeText(text);
+            showNotification('Copied to clipboard!', 'success');
+            
+            const btn = document.getElementById(btnId);
+            const originalIcon = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-check"></i>';
+            setTimeout(() => btn.innerHTML = originalIcon, 2000);
+        } catch (err) {
+            showNotification('Failed to copy', 'error');
+        }
+    }
+
+    function resetForm() {
+        if (confirm('Reset all fields? This cannot be undone.')) {
+            form.reset();
+            localStorage.removeItem(STORAGE_KEY);
+            document.getElementById('output-id').value = '';
+            document.getElementById('output-en').value = '';
+            
+            const statusText = document.querySelector('.status-text');
+            const statusDot = document.querySelector('.status-dot');
+            statusText.textContent = "Ready";
+            statusDot.style.background = "var(--accent-success)";
+            statusDot.style.boxShadow = "none";
+            
+            showNotification('Form reset complete', 'success');
+        }
+    }
+
+    // --- Autosave ---
+    function saveToLocal() {
+        const data = getFormData();
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    }
+
+    function loadSavedData() {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) {
+            try {
+                const data = JSON.parse(saved);
+                Object.keys(data).forEach(key => {
+                    const el = document.getElementById(key);
+                    if (el && data[key]) el.value = data[key];
+                });
+                // showNotification('Saved draft loaded', 'info');
+            } catch (e) {
+                console.error('Corerupted save data');
+            }
+        }
+    }
+
+    // --- Scroll Spy & Events ---
+    function setupScrollSpy() {
+        // Highlight nav on scroll
+        scrollContainer.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                // Offset for header
+                 if (scrollContainer.scrollTop >= (sectionTop - 150)) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navItems.forEach(a => {
+                a.classList.remove('active');
+                if (a.getAttribute('href').includes(current)) {
+                    a.classList.add('active');
+                }
+            });
+        });
+    }
+
+    function setupEventListeners() {
+        document.getElementById('generate-btn').addEventListener('click', generatePrompt);
+        document.getElementById('reset-btn').addEventListener('click', resetForm);
+        
+        document.getElementById('copy-id-btn').addEventListener('click', () => copyToClipboard('output-id', 'copy-id-btn'));
+        document.getElementById('copy-en-btn').addEventListener('click', () => copyToClipboard('output-en', 'copy-en-btn'));
+
+        // Autosave on input
+        form.addEventListener('input', () => {
+             // Debounce save slightly
+             clearTimeout(window.saveTimeout);
+             window.saveTimeout = setTimeout(saveToLocal, 1000);
+        });
+
+        // Key shortcuts
+        document.addEventListener('keydown', (e) => {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+                generatePrompt();
+            }
+        });
+    }
+
+    // Run
+    init();
+});
     // Camera movements data
     const cameraMovements = [
         { en: "Static Shot", id: "Tangkapan Statis" },

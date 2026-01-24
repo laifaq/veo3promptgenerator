@@ -4,6 +4,239 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Veo 3 Prompt Generator - Professional AI Video Prompt Creator</title>
+    <meta name="description" content="Generate professional AI video prompts for Veo 3 with this modern, user-friendly tool.">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="logo">
+                <i class="fas fa-video fa-fw"></i>
+                <span>Veo 3 Gen</span>
+            </div>
+            
+            <nav class="nav-menu">
+                <a href="#section-core" class="nav-item active">
+                    <i class="fas fa-layer-group"></i>
+                    <span>Core Scene</span>
+                </a>
+                <a href="#section-details" class="nav-item">
+                    <i class="fas fa-sliders-h"></i>
+                    <span>Details</span>
+                </a>
+                <a href="#section-visuals" class="nav-item">
+                    <i class="fas fa-eye"></i>
+                    <span>Visuals</span>
+                </a>
+                <a href="#section-atmospherics" class="nav-item">
+                    <i class="fas fa-wind"></i>
+                    <span>Atmospherics</span>
+                </a>
+                <a href="#section-output" class="nav-item mobile-only">
+                    <i class="fas fa-code"></i>
+                    <span>Output</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <a href="https://tiktok.com/@muhamadfa.qih" target="_blank" class="social-link">
+                    <i class="fab fa-tiktok"></i>
+                    <span>@muhamadfa.qih</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <header class="top-bar">
+                <div class="header-content">
+                    <h1>Create Prompt</h1>
+                    <p>Design your perfect AI video scene</p>
+                </div>
+                <div class="action-buttons">
+                    <button type="button" class="btn btn-secondary" id="reset-btn" title="Reset Form">
+                        <i class="fas fa-redo"></i>
+                        <span class="btn-text">Reset</span>
+                    </button>
+                    <button type="button" class="btn btn-primary" id="generate-btn">
+                        <i class="fas fa-magic"></i>
+                        <span>Generate</span>
+                    </button>
+                </div>
+            </header>
+
+            <form id="prompt-form" class="scroll-container">
+                
+                <!-- Section 1: Core Scene -->
+                <section id="section-core" class="form-section">
+                    <div class="section-header">
+                        <h2><i class="fas fa-layer-group"></i> Core Scene</h2>
+                        <p>Define the foundation of your video.</p>
+                    </div>
+
+                    <div class="floating-group">
+                        <input type="text" id="judul" required placeholder=" ">
+                        <label for="judul">1. Scene Title</label>
+                        <span class="helper-text">Contoh: Terminal bus malam yang ramai</span>
+                    </div>
+
+                    <div class="floating-group">
+                        <textarea id="karakter" rows="5" required placeholder=" "></textarea>
+                        <label for="karakter">2. Core Character Description</label>
+                        <span class="helper-text">Fisik, usia, pakaian, dan ciri khas karakter.</span>
+                    </div>
+
+                    <div class="floating-group">
+                        <textarea id="aksi" rows="3" placeholder=" "></textarea>
+                        <label for="aksi">3. Character Action</label>
+                    </div>
+                </section>
+
+                <!-- Section 2: Details -->
+                <section id="section-details" class="form-section">
+                    <div class="section-header">
+                        <h2><i class="fas fa-sliders-h"></i> Character Details</h2>
+                        <p>Bring your character to life.</p>
+                    </div>
+
+                    <div class="grid-2-col">
+                        <div class="floating-group">
+                            <textarea id="suara" rows="4" placeholder=" "></textarea>
+                            <label for="suara">4. Voice Details</label>
+                        </div>
+                        <div class="floating-group">
+                            <textarea id="ekspresi" rows="4" placeholder=" "></textarea>
+                            <label for="ekspresi">5. Expression</label>
+                        </div>
+                    </div>
+
+                    <div class="floating-group">
+                        <textarea id="dialog" rows="3" placeholder=" "></textarea>
+                        <label for="dialog">6. Dialog (Bahasa Indonesia)</label>
+                    </div>
+                </section>
+
+                <!-- Section 3: Visuals -->
+                <section id="section-visuals" class="form-section">
+                    <div class="section-header">
+                        <h2><i class="fas fa-eye"></i> Visuals & Setting</h2>
+                        <p>Set the stage and camera.</p>
+                    </div>
+
+                    <div class="floating-group">
+                        <textarea id="latar" rows="4" placeholder=" "></textarea>
+                        <label for="latar">7. Setting & Time</label>
+                    </div>
+
+                    <div class="grid-2-col">
+                        <div class="select-group">
+                            <label for="kamera" class="static-label">8. Camera Movement</label>
+                            <div class="select-wrapper">
+                                <select id="kamera">
+                                    <option value="">Select Movement...</option>
+                                    <!-- Options populated by JS -->
+                                </select>
+                                <i class="fas fa-chevron-down dropdown-icon"></i>
+                            </div>
+                        </div>
+                        <div class="floating-group">
+                            <textarea id="visual-tambahan" rows="4" placeholder=" "></textarea>
+                            <label for="visual-tambahan">9. Additional Visuals</label>
+                            <span class="helper-text">Lighting, style, quality.</span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Section 4: Atmospherics -->
+                <section id="section-atmospherics" class="form-section">
+                    <div class="section-header">
+                        <h2><i class="fas fa-wind"></i> Atmospherics</h2>
+                        <p>Mood, sound, and exclusions.</p>
+                    </div>
+
+                    <div class="grid-2-col">
+                         <div class="floating-group">
+                            <textarea id="suasana" rows="3" placeholder=" "></textarea>
+                            <label for="suasana">10. Overall Atmosphere</label>
+                        </div>
+                        <div class="floating-group">
+                            <textarea id="ambience" rows="3" placeholder=" "></textarea>
+                            <label for="ambience">11. Environment Sound</label>
+                        </div>
+                    </div>
+
+                    <div class="floating-group danger-zone">
+                        <textarea id="negatif" rows="3" placeholder=" "></textarea>
+                        <label for="negatif"><i class="fas fa-ban"></i> Negative Prompt</label>
+                    </div>
+                </section>
+                
+                <div class="spacer-bottom"></div>
+            </form>
+        </main>
+
+        <!-- Right Panel: Output -->
+        <aside class="output-panel" id="output-panel">
+            <div class="output-header-sticky">
+                <h3>Generated Prompt</h3>
+                <div class="status-indicator">
+                    <span class="status-dot"></span>
+                    <span class="status-text">Ready</span>
+                </div>
+            </div>
+
+            <div class="output-content">
+                <div class="output-card">
+                    <div class="card-header">
+                        <span class="lang-tag id">ID</span>
+                        <h4>Bahasa Indonesia</h4>
+                        <button class="icon-btn copy-btn" id="copy-id-btn" title="Copy to Clipboard">
+                            <i class="far fa-copy"></i>
+                        </button>
+                    </div>
+                    <div class="textarea-wrapper">
+                        <textarea id="output-id" readonly placeholder="Prompt generated here..."></textarea>
+                    </div>
+                </div>
+
+                <div class="output-card">
+                    <div class="card-header">
+                        <span class="lang-tag en">EN</span>
+                        <h4>English Format</h4>
+                        <button class="icon-btn copy-btn" id="copy-en-btn" title="Copy to Clipboard">
+                            <i class="far fa-copy"></i>
+                        </button>
+                    </div>
+                    <div class="textarea-wrapper">
+                        <textarea id="output-en" readonly placeholder="Prompt generated here..."></textarea>
+                    </div>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <!-- Notification Container -->
+    <div id="notification-container"></div>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="hidden">
+        <div class="loader-content">
+            <div class="spinner"></div>
+            <p>Crafting your prompt...</p>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html><html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Veo 3 Prompt Generator - Professional AI Video Prompt Creator</title>
     <meta name="description" content="Generate professional AI video prompts for Veo 3 with this modern, user-friendly tool by Muhammad Faqih">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
